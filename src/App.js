@@ -1,19 +1,37 @@
-import './App.css';
-import { useState } from 'react'
-import Content from './Content';
-import Upload from './Upload';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { publicRouters } from './routes';
+import { DefaultLayout } from './components/Layout';
+import { Fragment } from 'react';
+
 function App() {
-  const [show,setshow] = useState(false)
-  const handleClick = ()=>{
-    setshow(!show)
-  }
-  return (
-    <div className="App1" style={{padding:32}}>
-      <button onClick={handleClick}>Toggle</button>
-      {/* {show && <Content/>} */}
-      <Upload></Upload>
-    </div>
-  );
+    return (
+        <Router>
+            <div className="App">
+                <Routes>
+                    {publicRouters.map((route, index) => {
+                        const Page = route.element;
+                        let Layout = DefaultLayout;
+                        if (route.layout) {
+                            Layout = route.layout;
+                        } else if (route.layout === null) {
+                            Layout = Fragment;
+                        }
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={
+                                    <Layout>
+                                        <Page />
+                                    </Layout>
+                                }
+                            />
+                        );
+                    })}
+                </Routes>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
